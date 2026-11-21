@@ -8,6 +8,7 @@ import { Badge, Bar, Empty, Metric, Note, PageHeader, Panel, Steps } from "../co
 export function CommandPage() {
   const data = useData();
   const go = useUi((state) => state.go);
+  const openTour = useUi((state) => state.openTour);
   const assets = data.assets;
   const average = assets.length ? Math.round(assets.reduce((sum, asset) => sum + riskValue(asset, data.model), 0) / assets.length) : 0;
   const high = assets.filter((asset) => riskValue(asset, data.model) >= 65).length;
@@ -25,6 +26,7 @@ export function CommandPage() {
         <div className="ornament">⬡</div>
       </div>
       <div className="toolbar">
+        <button className="btn dark" type="button" onClick={() => openTour(0)}>See how the system works</button>
         <button className="btn primary" type="button" onClick={() => go("scenarios")}>+ New disruption scenario</button>
         <button className="btn" type="button" onClick={() => go("assets")}>Explore OT assets</button>
         <button className="btn" type="button" onClick={() => go("optimize")}>Optimize recovery portfolio</button>

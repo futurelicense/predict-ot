@@ -15,7 +15,12 @@ interface UiState {
   reportType: string;
   toast: string | null;
   confirm: ConfirmState | null;
+  tourOpen: boolean;
+  tourStep: number;
   go: (page: PageId) => void;
+  openTour: (step?: number) => void;
+  closeTour: () => void;
+  setTourStep: (step: number) => void;
   setSidebar: (open: boolean) => void;
   notify: (message: string) => void;
   askConfirm: (message: string, confirmLabel: string, run: () => void) => void;
@@ -36,6 +41,8 @@ export const useUi = create<UiState>((set) => ({
   reportType: "Risk and resilience brief",
   toast: null,
   confirm: null,
+  tourOpen: false,
+  tourStep: 0,
   go: (page) => {
     const next = `#/${page}`;
     if (typeof location !== "undefined" && location.hash !== next) location.hash = next;
@@ -54,4 +61,7 @@ export const useUi = create<UiState>((set) => ({
   setSelectedAsset: (selectedAsset) => set({ selectedAsset }),
   setReportType: (reportType) => set({ reportType }),
   setPageFromHash: (hash) => set({ page: pageFromHash(hash), sidebarOpen: false }),
+  openTour: (step) => set((state) => ({ tourOpen: true, tourStep: step ?? state.tourStep })),
+  closeTour: () => set({ tourOpen: false }),
+  setTourStep: (tourStep) => set({ tourStep }),
 }));

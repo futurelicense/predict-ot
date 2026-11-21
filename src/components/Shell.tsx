@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { labelFor, NAV } from "../nav";
 import { modeLabel } from "../domain/workspace";
 import { exportBackup } from "../lib/exchange";
+import { Tour } from "./tour/Tour";
 import { useUi } from "../store/ui";
 import { useData, useWorkspace } from "../store/workspace";
 
@@ -52,6 +53,7 @@ export function Shell({ children }: { children: ReactNode }) {
             <div className="breadcrumbs">PREDICT-OT / {labelFor(page).toUpperCase()}</div>
           </div>
           <div className="topactions">
+            <button className="btn small" type="button" onClick={() => useUi.getState().openTour()}>Guide</button>
             <span className="pill green">LOCAL WORKSPACE</span>
             <span className="pill amber">{data.mode === "demo" ? "SYNTHETIC DEMO" : "RESEARCH"}</span>
             <span className="pill">MODEL v{data.model.version}</span>
@@ -68,6 +70,7 @@ export function Shell({ children }: { children: ReactNode }) {
       </main>
       <Toast />
       <Confirm />
+      <Tour />
     </div>
   );
 }
