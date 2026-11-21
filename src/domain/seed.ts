@@ -1,0 +1,96 @@
+import type { WorkspaceData } from "./types";
+
+const SEED: WorkspaceData = {
+  mode: "demo",
+  name: "National OT Resilience Research",
+  sector: "All sectors",
+  activeScenario: "SC-100",
+  assets: [
+    { id: "OT-101", name: "Primary substation gateway", sector: "Energy", service: "Electric distribution", criticality: 5, exposure: 4, condition: 3, cve: "CVE-2024-0001", site: "North Grid", rto: 4, rpo: 1 },
+    { id: "OT-102", name: "Distribution SCADA historian", sector: "Energy", service: "Electric distribution", criticality: 4, exposure: 3, condition: 2, cve: "CVE-2023-0002", site: "North Grid", rto: 6, rpo: 2 },
+    { id: "OT-103", name: "Substation protection relay", sector: "Energy", service: "Electric distribution", criticality: 5, exposure: 2, condition: 4, cve: "", site: "North Grid", rto: 2, rpo: 1 },
+    { id: "OT-201", name: "Water treatment HMI", sector: "Water & Wastewater", service: "Drinking water supply", criticality: 5, exposure: 3, condition: 4, cve: "CVE-2022-0003", site: "Cedar Water", rto: 3, rpo: 1 },
+    { id: "OT-202", name: "Chemical dosing PLC", sector: "Water & Wastewater", service: "Drinking water supply", criticality: 5, exposure: 2, condition: 3, cve: "", site: "Cedar Water", rto: 2, rpo: 1 },
+    { id: "OT-203", name: "Backup pump controller", sector: "Water & Wastewater", service: "Drinking water supply", criticality: 4, exposure: 2, condition: 2, cve: "", site: "Cedar Water", rto: 5, rpo: 2 },
+    { id: "OT-301", name: "Rail signal controller", sector: "Transportation", service: "Rail operations", criticality: 5, exposure: 3, condition: 3, cve: "CVE-2023-0004", site: "Transit East", rto: 2, rpo: 1 },
+    { id: "OT-302", name: "Dispatch communications gateway", sector: "Transportation", service: "Rail operations", criticality: 4, exposure: 4, condition: 2, cve: "", site: "Transit East", rto: 4, rpo: 2 },
+    { id: "OT-401", name: "Packaging line PLC", sector: "Manufacturing", service: "Industrial production", criticality: 4, exposure: 3, condition: 3, cve: "", site: "Mill South", rto: 8, rpo: 4 },
+    { id: "OT-402", name: "Plant MES gateway", sector: "Manufacturing", service: "Industrial production", criticality: 3, exposure: 4, condition: 2, cve: "", site: "Mill South", rto: 12, rpo: 3 },
+    { id: "OT-501", name: "Carrier network controller", sector: "Communications", service: "Emergency communications", criticality: 5, exposure: 4, condition: 4, cve: "", site: "Comms Central", rto: 3, rpo: 1 },
+    { id: "OT-601", name: "Hospital backup power ATS", sector: "Healthcare", service: "Hospital power continuity", criticality: 5, exposure: 2, condition: 3, cve: "", site: "Medical West", rto: 1, rpo: 1 },
+  ],
+  services: [
+    { name: "Electric distribution", sector: "Energy", criticality: 5, demand: 900, rto: 4, assets: ["OT-101", "OT-102", "OT-103"] },
+    { name: "Drinking water supply", sector: "Water & Wastewater", criticality: 5, demand: 720, rto: 3, assets: ["OT-201", "OT-202", "OT-203"] },
+    { name: "Rail operations", sector: "Transportation", criticality: 4, demand: 550, rto: 2, assets: ["OT-301", "OT-302"] },
+    { name: "Industrial production", sector: "Manufacturing", criticality: 3, demand: 350, rto: 8, assets: ["OT-401", "OT-402"] },
+    { name: "Emergency communications", sector: "Communications", criticality: 5, demand: 680, rto: 3, assets: ["OT-501"] },
+    { name: "Hospital power continuity", sector: "Healthcare", criticality: 5, demand: 820, rto: 1, assets: ["OT-601"] },
+  ],
+  scenarios: [
+    { id: "SC-100", name: "Substation communications interruption", asset: "OT-101", severity: 4, likelihood: 3, duration: 7, recovery: 6, budget: 120, owner: "Grid reliability team", status: "Draft", created: "2026-11-18" },
+    { id: "SC-101", name: "Water HMI service loss", asset: "OT-201", severity: 5, likelihood: 3, duration: 5, recovery: 4, budget: 90, owner: "Water operations team", status: "Draft", created: "2026-11-18" },
+    { id: "SC-102", name: "Rail dispatch telemetry outage", asset: "OT-301", severity: 4, likelihood: 2, duration: 6, recovery: 5, budget: 100, owner: "Transit safety team", status: "Draft", created: "2026-11-18" },
+    { id: "SC-103", name: "Manufacturing line controller degradation", asset: "OT-401", severity: 3, likelihood: 4, duration: 10, recovery: 7, budget: 80, owner: "Plant engineering", status: "Draft", created: "2026-11-18" },
+  ],
+  evidence: [
+    { id: "src-kev", name: "CISA Known Exploited Vulnerabilities", type: "JSON/CSV", kind: "Public intelligence", url: "https://www.cisa.gov/known-exploited-vulnerabilities-catalog", state: "Not connected" },
+    { id: "src-nvd", name: "NIST National Vulnerability Database", type: "REST API", kind: "Public intelligence", url: "https://nvd.nist.gov/developers/vulnerabilities", state: "Not connected" },
+    { id: "src-mitre", name: "MITRE ATT&CK for ICS", type: "STIX/TAXII", kind: "Public intelligence", url: "https://attack.mitre.org/matrices/ics/", state: "Not connected" },
+    { id: "src-ics", name: "CISA ICS Advisories", type: "Web/feeds", kind: "Public intelligence", url: "https://www.cisa.gov/news-events/cybersecurity-advisories", state: "Not connected" },
+    { id: "src-noaa", name: "NOAA Weather", type: "REST API", kind: "Environmental context", url: "https://www.weather.gov/documentation/services-web-api", state: "Not connected" },
+    { id: "src-eia", name: "EIA Open Data", type: "REST API", kind: "Sector context", url: "https://www.eia.gov/opendata/", state: "Not connected" },
+  ],
+  actions: [
+    { id: "AC-01", name: "Validate offline restore media", cost: 14, hours: 6, benefit: 16, category: "Readiness", safe: true },
+    { id: "AC-02", name: "Prepare alternate monitoring path", cost: 22, hours: 8, benefit: 22, category: "Continuity", safe: true },
+    { id: "AC-03", name: "Tabletop recovery exercise", cost: 12, hours: 9, benefit: 12, category: "Exercise", safe: true },
+    { id: "AC-04", name: "Stage approved replacement devices", cost: 32, hours: 12, benefit: 35, category: "Readiness", safe: true },
+    { id: "AC-05", name: "Document cross-team escalation", cost: 8, hours: 4, benefit: 9, category: "Coordination", safe: true },
+    { id: "AC-06", name: "Validate redundant service pathway", cost: 28, hours: 14, benefit: 30, category: "Continuity", safe: true },
+    { id: "AC-07", name: "Conduct evidence reconciliation", cost: 10, hours: 7, benefit: 11, category: "Governance", safe: true },
+    { id: "AC-08", name: "Approve controlled restoration rehearsal", cost: 24, hours: 10, benefit: 27, category: "Exercise", safe: true },
+  ],
+  model: { exposure: 0.3, impact: 0.45, readiness: 0.25, uncertainty: 18, version: 1 },
+  optimization: { budget: 90, hours: 35 },
+  riskRuns: [],
+  forecastRuns: [],
+  optimRuns: [],
+  reviews: [],
+  exercises: [],
+  reports: [],
+  audit: [],
+  playbooks: [],
+  alerts: [],
+  comments: [],
+  aiMode: "offline",
+  localGateway: "",
+  notes: "",
+  lastUpdated: "2026-11-20",
+};
+
+export function createSeed(): WorkspaceData {
+  return structuredClone(SEED);
+}
+
+export function createBlank(): WorkspaceData {
+  return {
+    ...createSeed(),
+    mode: "blank",
+    name: "New OT Research Workspace",
+    activeScenario: "",
+    assets: [],
+    services: [],
+    scenarios: [],
+    riskRuns: [],
+    forecastRuns: [],
+    optimRuns: [],
+    reviews: [],
+    exercises: [],
+    reports: [],
+    audit: [],
+    playbooks: [],
+    comments: [],
+    notes: "",
+  };
+}
