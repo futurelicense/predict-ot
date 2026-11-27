@@ -3,6 +3,7 @@ import { labelFor, NAV } from "../nav";
 import { modeLabel } from "../domain/workspace";
 import { exportBackup } from "../lib/exchange";
 import { Tour } from "./tour/Tour";
+import { useSession } from "../store/session";
 import { useUi } from "../store/ui";
 import { useData, useWorkspace } from "../store/workspace";
 
@@ -11,6 +12,8 @@ export function Shell({ children }: { children: ReactNode }) {
   const sidebarOpen = useUi((state) => state.sidebarOpen);
   const go = useUi((state) => state.go);
   const data = useData();
+  const session = useSession((state) => state.session);
+  const signOut = useSession((state) => state.signOut);
   const groups = NAV.reduce<Record<string, (typeof NAV)[number][]>>((all, item) => {
     all[item.section] ??= [];
     all[item.section].push(item);
@@ -20,13 +23,13 @@ export function Shell({ children }: { children: ReactNode }) {
   return (
     <div className="app">
       <aside className={sidebarOpen ? "sidebar open" : "sidebar"} id="sidebar">
-        <div className="brand">
+        <button className="brand brand-home" type="button" onClick={() => { location.hash = "#/"; }}>
           <div className="brandmark">⌁</div>
           <div>
             <div className="brandstrong">PREDICT-OT</div>
             <div className="brandsub">RESILIENCE INTELLIGENCE</div>
           </div>
-        </div>
+        </button>
         {Object.entries(groups).map(([section, links]) => (
           <div className="sidegroup" key={section}>
             <div className="sidecap">{section}</div>
@@ -54,6 +57,8 @@ export function Shell({ children }: { children: ReactNode }) {
           </div>
           <div className="topactions">
             <button className="btn small" type="button" onClick={() => useUi.getState().openTour()}>Guide</button>
+            {session ? <span className="pill name" title={session.organization ? `${session.name} · ${session.organization}` : session.name}>{session.name}</span> : null}
+            <button className="btn small" type="button" onClick={() => { location.hash = "#/"; signOut(); }}>Sign out</button>
             <span className="pill green">LOCAL WORKSPACE</span>
             <span className="pill amber">{data.mode === "demo" ? "SYNTHETIC DEMO" : "RESEARCH"}</span>
             <span className="pill">MODEL v{data.model.version}</span>

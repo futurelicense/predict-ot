@@ -21,9 +21,22 @@ export function isPageId(value: string): value is PageId {
   return NAV.some((item) => item.id === value);
 }
 
+export type PublicView = "landing" | "login";
+
+export type Surface =
+  | { kind: "public"; view: PublicView }
+  | { kind: "workspace"; page: PageId };
+
+export function surfaceFromHash(hash = ""): Surface {
+  const id = hash.replace(/^#\/?/, "").split(/[?#]/)[0];
+  if (id === "login" || id === "signin") return { kind: "public", view: "login" };
+  if (isPageId(id)) return { kind: "workspace", page: id };
+  return { kind: "public", view: "landing" };
+}
+
 export function pageFromHash(hash = ""): PageId {
-  const id = hash.replace(/^#\/?/, "");
-  return isPageId(id) ? id : "command";
+  const surface = surfaceFromHash(hash);
+  return surface.kind === "workspace" ? surface.page : "command";
 }
 
 export function labelFor(id: PageId) {

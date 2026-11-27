@@ -10,6 +10,7 @@ import { createBlank, createSeed } from "../domain/seed";
 import type { Asset, Review, RiskModel, Scenario, Service, WorkspaceData } from "../domain/types";
 import { attachAsset, isWorkspaceData, mergeWorkspace } from "../domain/workspace";
 import { clamp, uid } from "../lib/format";
+import { useSession } from "./session";
 import { useUi } from "./ui";
 
 const STORAGE_KEY = "predict-ot.workspace.v1";
@@ -73,6 +74,8 @@ function now() {
 }
 
 function actor(data: WorkspaceData) {
+  const name = useSession.getState().session?.name;
+  if (name) return name;
   return data.mode === "demo" ? "Demo analyst" : "Research analyst";
 }
 
